@@ -33,6 +33,7 @@ jobs:
           uses: Azure/cli@v1
           with:
             inlineScript: |
+              az version
               echo "Installing containerapp extension"
               az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
               echo "Starting Deploying"
