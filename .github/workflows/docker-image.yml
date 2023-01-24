@@ -35,7 +35,9 @@ jobs:
             inlineScript: |
               az version
               echo "Installing containerapp extension"
-              az extension add --name model_group6
+              # az extension add --name model_group6
+              
+              az containerapp create -g secrets.RESOURCE_GROUP -n model_group6 --image my-api-image --location eastus
               az config set extension.use_dynamic_install=yes_without_prompt
               
               # az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
