@@ -37,8 +37,11 @@ jobs:
               echo "Installing containerapp extension"
               az extension add --name model_group6
               az config set extension.use_dynamic_install=yes_without_prompt
+              
               # az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
               # hint : az containerapp up to create app if not exist
+              # or use a github action dedicated 
+              
               echo "Starting Deploying"
               az containerapp update \
                 -n model_group6 \
