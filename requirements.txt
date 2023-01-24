@@ -1,0 +1,8 @@
+pydantic
+numpy
+pandas
+fastapi
+scikit-learn==0.23.2
+uvicorn
+joblib
+starlette
