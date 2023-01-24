@@ -1,0 +1,47 @@
+
+name: deploy on Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+        
+        # login to Azure
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # login to ACR
+        - name: 'Login to ACR'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+        # deploy ACA 
+        - name: 'Deploy Container App'
+          uses: Azure/cli@v1
+          with:
+            inlineScript: |
+              echo "Installing containerapp extension"
+              az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
+              echo "Starting Deploying"
+              az containerapp update \
+                -n model_group6 \
+                -g ${{ secrets.RESOURCE_GROUP }} \
+                -i ${{ secrets.REGISTRY_LOGIN_SERVER }}/model_group6:v1 \
+                --min-replicas 0 \
+                --max-replicas 5 \
+                --scale-rule-name azure-http-rule \
+                --scale-rule-type http \
+                --scale-rule-http-concurrency 10
