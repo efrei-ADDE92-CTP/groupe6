@@ -1,56 +1,53 @@
-
-name: deploy on Azure
+name: CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - master
+      - main
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-        # checkout the repo
-        - name: 'Checkout GitHub Action'
-          uses: actions/checkout@main
-        
-        # login to Azure
-        - name: 'Login via Azure CLI'
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-        # login to ACR
-        - name: 'Login to ACR'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        
-        # deploy ACA 
-        - name: 'Deploy Container App'
-          uses: Azure/cli@v1
-          with:
-            inlineScript: |
-              az version
-              echo "Installing containerapp extension"
-              # az extension add --name model_group6
-              
-              az containerapp create -g secrets.RESOURCE_GROUP -n model_group6 --image my-api-image --location eastus
-              az config set extension.use_dynamic_install=yes_without_prompt
-              
-              # az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
-              # hint : az containerapp up to create app if not exist
-              # or use a github action dedicated 
-              
-              echo "Starting Deploying"
-              az containerapp update \
-                -n model_group6 \
-                -g ${{ secrets.RESOURCE_GROUP }} \
-                -i ${{ secrets.REGISTRY_LOGIN_SERVER }}/model_group6:v1 \
-                --min-replicas 0 \
-                --max-replicas 5 \
-                --scale-rule-name azure-http-rule \
-                --scale-rule-type http \
-                --scale-rule-http-concurrency 10
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push image
+        run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/iris-project-grp8:latest
+          az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image iris-project-grp8:latest .
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v0
+        with:
+          containerAppName: group6_container
+          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+          imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
+          containerAppEnvironment: group6_env
+
+      - name: Configure Autoscaling
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az containerapp update \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --name group6_container \
+            --min-replicas 0 \
+            --max-replicas 5 \
+            --scale-rule-name azure-http-rule \
+            --scale-rule-type http \
+            --scale-rule-http-concurrency 100
