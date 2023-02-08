@@ -34,10 +34,10 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v0
         with:
-          containerAppName: group6_container
+          containerAppName: group6-container
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
           imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
-          containerAppEnvironment: group6_env
+          containerAppEnvironment: group6-env
 
       - name: Configure Autoscaling
         uses: azure/CLI@v1
@@ -45,7 +45,7 @@ jobs:
           inlineScript: |
             az containerapp update \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --name group6_container \
+            --name group6-container \
             --min-replicas 0 \
             --max-replicas 5 \
             --scale-rule-name azure-http-rule \
