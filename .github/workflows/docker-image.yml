@@ -29,8 +29,8 @@ jobs:
 
       - name: Build and push image
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/iris-project-grp8:latest
-          az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image iris-project-grp8:latest .
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
+          az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image my-api-image:latest .
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v0
         with:
