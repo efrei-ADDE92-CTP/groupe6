@@ -71,13 +71,13 @@ async def predict(input_data: schemas.Iris) :
 @api_router.post("/metrics") # @api_router.get("/metrics")
 def get_counter() :
     return generate_latest(predict_calls_counter).decode("utf-8") # return generate_latest().decode("utf-8")
-    # curl 'http://localhost:8080/metrics' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
+    # curl 'http://localhost:8080/metrics' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}' | tr -d '\n' | tr '#' '\n' | grep -v '^$'
 
 
 @api_router.post('/metrics/duration')
 def get_duration() :
     return generate_latest(predict_call_duration).decode("utf-8")
-    # curl 'http://localhost:8080/metrics/duration' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
+    # curl 'http://localhost:8080/metrics/duration' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}' | tr -d '\n' | tr '#' '\n' | grep -v '^$'
 
 
 if __name__ == '__main__' :
