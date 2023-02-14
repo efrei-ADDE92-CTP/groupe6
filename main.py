@@ -24,8 +24,8 @@ with open('rf.sav', 'rb') as file :
 # Define the metric variables
 predict_calls_counter = Counter('total_predict_calls', 'Number of predict requests to the API endpoint')
 predict_call_duration = Histogram('predict_latency_seconds', 'Latency time of the API for a predict call', ['method']) # ValueError: No label names were set when constructing histogram:predict_latency_seconds
-# api_info = Info('api_info', 'Information about the API')
-# api_summary = Summary('api_request_size_bytes', 'The size of the API request')
+api_call_info = Info('api_info', 'Information about the API', ["method", "first_endpoint"])
+api_call_summary = Summary('api_call_bytes_size', 'Size of the API call', ["method", "second_endpoint"])
 
 
 @api_router.post("/predict", status_code=200)
@@ -78,6 +78,23 @@ def get_counter() :
 def get_duration() :
     return generate_latest(predict_call_duration).decode("utf-8")
     # curl 'http://localhost:8080/metrics/duration' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}' | tr -d '\n' | tr '#' '\n' | grep -v '^$'
+
+
+@api_router.post("/api/call/info")
+def api_call_info_post() :
+    endpoint = "/api/call/info"
+    api_call_info.labels("POST", "info").info({"endpoint": endpoint, "info": api_call_info.info})
+    return {"status": "success"}
+    # curl 'http://localhost:8080/api/call/info' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}' | tr -d '\n' | tr '#' '\n' | grep -v '^$'
+
+
+@api_router.post("/api/call/summary")
+def api_call_summary_post() :
+    start = time.time()
+    # Perform API processing here
+    api_call_summary.labels("POST", "elapsed_time").observe(time.time() - start)
+    return {"status": "success"}
+    # curl 'http://localhost:8080/api/call/summary' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}' | tr -d '\n' | tr '#' '\n' | grep -v '^$'
 
 
 if __name__ == '__main__' :
