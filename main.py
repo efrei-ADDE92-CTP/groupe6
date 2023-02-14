@@ -23,7 +23,7 @@ with open('rf.sav', 'rb') as file :
 
 # Define the metric variables
 predict_calls_counter = Counter('total_predict_calls', 'Number of predict requests to the API endpoint')
-predict_call_duration = Histogram('predict_latency_seconds', 'Latency time of the API for a predict call')
+predict_call_duration = Histogram('predict_latency_seconds', 'Latency time of the API for a predict call', ['method']) # ValueError: No label names were set when constructing histogram:predict_latency_seconds
 # api_info = Info('api_info', 'Information about the API')
 # api_summary = Summary('api_request_size_bytes', 'The size of the API request')
 
@@ -46,14 +46,15 @@ async def predict(input_data: schemas.Iris) :
     X = np.array(list(data.values())).reshape(1, -1)
 
     # Get prediction
-    pred = loaded_model.predict(X)
+    pred = loaded_model.predict(X) # -> numpy.ndarray type
 
     # Convert Python object into a string in JSON object format
-    # json_pred = json.dumps(pred.tolist())
+    json_pred = json.dumps(pred.tolist()) # -> str type
 
     # Get the prediction label
-    iris_pred = iris_labels[pred[0]]
-    result = {'prediction': iris_pred}
+    # iris_pred = iris_labels[int(pred[0])] # TypeError: list indices must be integers or slices, not numpy.float64
+    iris_pred = iris_labels[int(float(json_pred[1:-1]))] # ValueError: invalid literal for int() with base 10: '2.0'
+    labeled_pred = {'prediction': iris_pred}
 
     # Increment the counter
     predict_calls_counter.inc()
@@ -61,7 +62,8 @@ async def predict(input_data: schemas.Iris) :
     # Get the request time duration
     predict_call_duration.labels(pred).observe(time.time() - start_time)
 
-    return result # pred.tolist()
+    print("Prediction is : ", labeled_pred)
+    return labeled_pred # pred.tolist()
     # curl 'http://localhost:8080/predict' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
 
 
