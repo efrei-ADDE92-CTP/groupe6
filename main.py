@@ -54,7 +54,7 @@ async def predict(input_data: schemas.Iris) :
     # Get the prediction label
     # iris_pred = iris_labels[int(pred[0])] # TypeError: list indices must be integers or slices, not numpy.float64
     iris_pred = iris_labels[int(float(json_pred[1:-1]))] # ValueError: invalid literal for int() with base 10: '2.0'
-    labeled_pred = {'prediction': iris_pred}
+    labeled_pred = {'endpoint': '/predict', 'prediction': iris_pred} + str(int(float(json_pred[1:-1])))
 
     # Increment the counter
     predict_calls_counter.inc()
@@ -62,7 +62,7 @@ async def predict(input_data: schemas.Iris) :
     # Get the request time duration
     predict_call_duration.labels(pred).observe(time.time() - start_time)
 
-    print("Prediction is : ", labeled_pred)
+    # print("Prediction is : ", labeled_pred)
     return labeled_pred # pred.tolist()
     # curl 'http://localhost:8080/predict' -H 'Content-Type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
 
