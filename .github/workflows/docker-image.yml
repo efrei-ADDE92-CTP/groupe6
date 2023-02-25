@@ -51,5 +51,3 @@ jobs:
             --scale-rule-name azure-http-rule \
             --scale-rule-type http \
             --scale-rule-http-concurrency 100
-            
-            
