@@ -2,6 +2,9 @@ FROM python:3.7-slim-buster
 
 # RUN apt-get update && apt-get install -y python3-dev build-essential
 
+# Definition of the API URL endpoint
+ENV API_URL = https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+
 RUN mkdir -p /groupe6/
 WORKDIR /groupe6/
 
