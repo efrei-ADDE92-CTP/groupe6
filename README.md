@@ -53,13 +53,13 @@ $ pip freeze > requirements.txt
 ````docker
 FROM python:3.7-slim-buster
 
-RUN apt-get update && apt-get install -y python3-dev build-essential
+# RUN apt-get update && apt-get install -y python3-dev build-essential
 
 RUN mkdir -p /projet
 WORKDIR /projet
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
@@ -70,7 +70,7 @@ CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ````
 
 ---
-### Docker commands to build and run the project and to test the program
+### Docker commands to build, run the project and to test the program
 
 ````bash
 $ docker build --tag files . # Build the image
@@ -119,6 +119,114 @@ $ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
 # In another CLI terminal :
 $ curl 'http://localhost:8080/predict' -H 'content-type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
 ````
+
+---
+### Configure the deployment pipeline with the following elements
+
+#### - Build the Docker image, publish the Docker image on Azure Container Registry (ACR) and deploy on Azure Container App
+
+- ##### Configuration of a *Dockerfile* (see above)
+````docker
+FROM python:3.7-slim-buster
+
+# RUN apt-get update && apt-get install -y python3-dev build-essential
+
+RUN mkdir -p /projet
+WORKDIR /projet
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 5000"] on Windows
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
+````
+
+- ##### Configure the *GitHub Actions workflow* *(configure the autoscaling using the number of simultaneous requests as a parameter)*
+  - Go to *https://github.com/efrei-ADDE92-CTP/groupe6*
+  - Go to the "*Actions*" tab
+  - Click on "*New workflow*" then in "*Docker image*" -> "*Configure*"
+  - It allows to configure the *`docker-image.yml `* file, that can be found at :
+    *https://github.com/efrei-ADDE92-CTP/groupe6/blob/main/.github/workflows/docker-image.yml*
+  - Configure it as follows :
+````yaml
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push image
+        run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
+          az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image my-api-image:latest .
+
+      - name: Deploy Container App
+        uses: azure/container-apps-deploy-action@47e03a783248cc0b5647f7ea03a8fb807fbc8e2f
+        with:
+          containerAppName: group6-container
+          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+          imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
+          containerAppEnvironment: group6-env
+
+      - name: Configure Autoscaling
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az containerapp update \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --name group6-container \
+            --min-replicas 0 \
+            --max-replicas 5 \
+            --scale-rule-name azure-http-rule \
+            --scale-rule-type http \
+            --scale-rule-http-concurrency 100
+````
+
+- ##### Start the process
+  - Click on "*Start commit*" then on "*Commit new file*"
+  - Return to "*Actions*"
+  - Click on the "*Create docker_image.yml*" workflow which is running
+  - On the left side, we can see the different steps of this process, in the "*jobs*" section -> clicking on "*build*" :
+    - *Set up a job*
+    - *Run actions/checkout@v2*
+    - *Login via Azure CLI*
+    - *Login to ACR*
+    - *Build and push image*
+    - *Deploy Container App*
+    - *Configure Autoscaling*
+    - *Post Deploy Container App*
+    - *Post Run actions/checkout@v2*
+    - *Complete job*
+
+=> After these steps, our image has correctly been sent to the azure portal, at the following address :
+*https://portal.azure.com/#@efrei.net/resource/subscriptions/765266c6-9a23-4638-af32-dd1e32613047/resourceGroups/ADDE92-CTP/providers/Microsoft.App/containerApps/group6-container/containerapp*
 
 ---
 ### Testing the application's scalability
@@ -201,4 +309,49 @@ Status code distribution:
 
 ---
 ### Get the Endpoint API of your Azure Container App
+
+On *Azure Portal*, go to :
+- "*All resources*"
+- "*Subscription*" -> *"Efrei - Apprentis BDML*" -> "*groupe6-container*"
+- "*Overview*"
+- "*Properties*" -> Networking -> click on "*deactivated*"
+- "*Input*" -> check "*activated*"
+- "*Destination port*" -> "*5000*"
+- "*Save*" and return to "*Overview*"
+- Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+
+````bash
+$ docker run -p 8080:5000 -it --rm https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+````
 ***complete***
+
+---
+### Bonus
+### Use a linter for Dockerfile in the deployment pipeline to ensure its consistency
+
+- We use the Dockerfile linter named *`hadolint`*.
+- In the *`docker_image.yml`* file, we add these lines :
+````yaml
+- name: Linter Dockerfile
+  uses: hadolint/hadolint-action@v2.0.0
+  with:
+    dockerfile: Dockerfile
+````
+
+- This "*Dockerfile linter*" step pulls a "*hadolint Docker image*" and uses it to linter the Dockerfile. If the linter detects any problems, the build will fail.
+  - It allows us to check that our Dockerfile is correctly written (respect of good practices).
+  - It means that once we have configured our deployment pipeline to use a Dockerfile linter, we can be sure that all the Docker images we deploy are up to quality standards.
+
+- We can see this with the add of these lines in the jobs process steps :
+    - *Set up a job*
+    - ***Build hadolint/hadolint-action@v2.0.0***
+    - *Run actions/checkout@v2*
+    - ***Linter Dockerfile***
+    - *Login via Azure CLI*
+    - *Login to ACR*
+    - *Build and push image*
+    - *Deploy Container App*
+    - *Configure Autoscaling*
+    - *Post Deploy Container App*
+    - *Post Run actions/checkout@v2*
+    - *Complete job*
