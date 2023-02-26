@@ -66,7 +66,7 @@ According to the official documentation, here the advantages to use that framewo
 * See the *main.py* file on the repository.
 
 ---
-### Configuration of a *Dockerfile*
+### 4. Configuration of a *Dockerfile*
 
 ````docker
 FROM python:3.7-slim-buster
@@ -88,7 +88,7 @@ CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ````
 
 ---
-### Docker commands to build, run the project and to test the program
+### 5. Docker commands to build, run the project and to test the program
 
 ````bash
 $ docker build --tag files . # Build the image
@@ -105,7 +105,7 @@ $ curl 'http://localhost:8080/predict' -H 'content-type: application/json' -d '{
 ````
 
 ---
-### Publish an image on the DockerHub
+### 6. Publish an image on the DockerHub *(not required)*
 
 ````bash
 $ docker login --username=antoinearthur
@@ -129,7 +129,7 @@ $ docker push antoinearthur/app_big_data_docker_project
 
 
 ---
-### Run the image and test the program yet again
+### 6'.Run the image and test the program yet again
 
 ````bash
 $ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
@@ -139,11 +139,11 @@ $ curl 'http://localhost:8080/predict' -H 'content-type: application/json' -d '{
 ````
 
 ---
-### Configure the deployment pipeline with the following elements
+### 7. Configure the deployment pipeline with the following elements
 
-#### - Build the Docker image, publish the Docker image on Azure Container Registry (ACR) and deploy on Azure Container App
+#### 7.1. Build the Docker image, publish the Docker image on Azure Container Registry (ACR) and deploy it on Azure Container App
 
-- ##### Configuration of a *Dockerfile* (see above)
+- ##### a. Configuration of a *Dockerfile* (see above)
 ````docker
 FROM python:3.7-slim-buster
 
@@ -163,7 +163,7 @@ EXPOSE 5000
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ````
 
-- ##### Configure the *GitHub Actions workflow* *(configure the autoscaling using the number of simultaneous requests as a parameter)*
+- ##### b. Configure the *GitHub Actions workflow* *(configure the autoscaling using the number of simultaneous requests as a parameter)*
   - Go to *https://github.com/efrei-ADDE92-CTP/groupe6*
   - Go to the "*Actions*" tab
   - Click on "*New workflow*" then in "*Docker image*" -> "*Configure*"
@@ -227,7 +227,7 @@ jobs:
             --scale-rule-http-concurrency 100
 ````
 
-- ##### Start the process
+- ##### c. Start the process
   - Click on "*Start commit*" then on "*Commit new file*"
   - Return to "*Actions*"
   - Click on the "*Create docker_image.yml*" workflow which is running
@@ -247,7 +247,7 @@ jobs:
 *https://portal.azure.com/#@efrei.net/resource/subscriptions/765266c6-9a23-4638-af32-dd1e32613047/resourceGroups/ADDE92-CTP/providers/Microsoft.App/containerApps/group6-container/containerapp*
 
 ---
-### Testing the application's scalability
+### 8. Testing the application's scalability (observe the autoscaling)
 
 ````python
 $ pip install wheel
@@ -326,7 +326,7 @@ Status code distribution:
 * Interpretation of the results : ***complete***
 
 ---
-### Get the Endpoint API of your Azure Container App
+### 9. Get the Endpoint API of your Azure Container App
 
 On *Azure Portal*, go to :
 - "*All resources*"
@@ -344,8 +344,8 @@ $ docker run -p 8080:5000 -it --rm https://group6-container.internal.ashysea-af4
 ***complete***
 
 ---
-### Bonus
-### Use a linter for Dockerfile in the deployment pipeline to ensure its consistency
+### 10. Bonus
+#### 10.1. Use a linter for Dockerfile in the deployment pipeline to ensure its consistency
 
 - We use the Dockerfile linter named *`hadolint`*.
 - In the *`docker_image.yml`* file, we add these lines :
