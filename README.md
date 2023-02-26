@@ -3,6 +3,11 @@ By conserving wildlife, we're ensuring that future generations can enjoy our nat
 
 ![image](https://user-images.githubusercontent.com/57401552/210325880-fd86a618-3812-471a-82f3-6dd79716f01c.png)
 
+### Deliveries :
+- Github repository URL with all elements *(code, Dockerfile, workflow configuration Github)* : *https://github.com/efrei-ADDE92-CTP/groupe6*
+- Name of the docker image on Azure Container Registry (ACR) : ***`group6-container`***
+- Endpoint API on Azure Container App : *https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io*
+
 ---
 ### 0. Preliminary preparation
 
@@ -73,8 +78,8 @@ FROM python:3.7-slim-buster
 
 # RUN apt-get update && apt-get install -y python3-dev build-essential
 
-RUN mkdir -p /projet
-WORKDIR /projet
+RUN mkdir -p /projet/
+WORKDIR /projet/
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -91,12 +96,11 @@ CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ### 5. Docker commands to build, run the project and to test the program
 
 ````bash
-$ docker build --tag files . # Build the image
+$ docker build --tag my-api-image:latest . # Build the image
 
-
-$ docker run -p 8080:5000 -it --rm files # run the image
+$ docker run -p 8080:5000 -it --rm my-api-image:latest # run the image
 Or
-$ docker run -it --network host --rm files # all ports mapped by the container are locally mapped
+$ docker run -it --network host --rm my-api-image:latest # all ports mapped by the container are locally mapped
 
 # In another CLI terminal :
 $ curl --request POST --url 'http://localhost:8080/predict' --header 'content-type: application/json' --data '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
@@ -114,13 +118,13 @@ Login Succeeded
 
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
-files                                       latest    2161bac8e4e0   40 hours ago   1.04GB
+my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
 
 $ docker tag 2161bac8e4e0 antoinearthur/app_big_data_docker_project
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
 antoinearthur/app_big_data_docker_project   latest    2161bac8e4e0   40 hours ago   1.04GB
-files                                       latest    2161bac8e4e0   40 hours ago   1.04GB
+my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
 
 $ docker push antoinearthur/app_big_data_docker_project
 ````
@@ -149,8 +153,8 @@ FROM python:3.7-slim-buster
 
 # RUN apt-get update && apt-get install -y python3-dev build-essential
 
-RUN mkdir -p /projet
-WORKDIR /projet
+RUN mkdir -p /projet/
+WORKDIR /projet/
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -259,7 +263,7 @@ $ pip freeze > requirements.txt
 * See the *test_charge.py* file on the repository.
 
 ````bash
-$ docker run -p 8080:5000 -it --rm files
+$ docker run -p 8080:5000 -it --rm my-api-image:latest
 Or
 $ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
 ````
@@ -326,7 +330,7 @@ Status code distribution:
 * Interpretation of the results : ***complete***
 
 ---
-### 9. Get the Endpoint API of your Azure Container App
+### 9. Get the Endpoint API of your Azure Container App *(ACA)*
 
 On *Azure Portal*, go to :
 - "*All resources*"
@@ -339,9 +343,13 @@ On *Azure Portal*, go to :
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
 
 ````bash
-$ docker run -p 8080:5000 -it --rm https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+$ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
+
+$ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
+
 ````
-***complete***
+
+- We obtain the same results as for the previous runs.
 
 ---
 ### 10. Bonus
