@@ -4,7 +4,7 @@ By conserving wildlife, we're ensuring that future generations can enjoy our nat
 ![image](https://user-images.githubusercontent.com/57401552/210325880-fd86a618-3812-471a-82f3-6dd79716f01c.png)
 
 ---
-### Preliminary preparation
+### 0. Preliminary preparation
 
 ````bash
 WSL2 :
@@ -21,7 +21,7 @@ $ source MYVENV/bin/activate
 ````
 
 ---
-### *Python* dependencies to install
+### 1. *Python* dependencies to install
 
 ````python
 $ pip install matplotlib==3.5.3
@@ -44,7 +44,25 @@ $ pip freeze > requirements.txt
 ````
 
 ---
-### Create a *main.py* file
+### 2. Technical choices
+- *`FastAPI`*
+According to the official documentation, here the advantages to use that framework : "*high performance, easy to learn, fast to code, ready for production*".
+  - ***Fast*** : Very high performance, on par with NodeJS and Go (thanks to Starlette and Pydantic). One of the fastest Python frameworks available.
+  - ***Fast to code*** : Increase the speed to develop features by about 200% to 300%.
+  - ***Fewer bugs*** : Reduce about 40% of human (developer) induced errors. *
+  - ***Intuitive*** : Great editor support. Completion everywhere. Less time debugging.
+  - ***Easy*** : Designed to be easy to use and learn. Less time reading docs.
+  - Then, we were already familiar with flask, we wanted to try another web/api framework
+
+- *`Hey`*
+  - *Hey* is a popular tool for performing load tests on a web application.
+  - *Hey* is a simple and easy to use tool for *small to medium sized load tests*, and is well suited for simple and quick tests.
+  - It is enough for our use case (only one docker image to test).
+  - It allows us to send HTTP requests to our web application and measure the response time of each request.
+  - It is very flexible and allows us to customize many parameters, such as *the number of requests, the sending rate, the HTTP method used, the headers, the data sent in the request, etc.*
+
+---
+### 3. Create a *main.py* file
 * See the *main.py* file on the repository.
 
 ---
@@ -237,7 +255,7 @@ $ pip install hey                    ou sudo apt install hey
 $ pip freeze > requirements.txt
 ````
 
-* We chose the *`hey`* library, easy to implement, and sufficient for our use case (only one docker image to test).
+* We chose the *`hey`* library, easy to implement, and enough for our use case (only one docker image to test).
 * See the *test_charge.py* file on the repository.
 
 ````bash
