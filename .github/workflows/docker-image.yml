@@ -36,6 +36,7 @@ jobs:
         run: |
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
           az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image my-api-image:latest .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
 
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@47e03a783248cc0b5647f7ea03a8fb807fbc8e2f
