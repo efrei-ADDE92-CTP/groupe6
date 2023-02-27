@@ -46,6 +46,7 @@ $ pip install starlette
 $ pip install starlette-exporter
 $ pip install wheel
 $ pip install hey                    ou sudo apt install hey
+$ pip install werkzeug
 $ pip freeze > requirements.txt
 ````
 
@@ -357,7 +358,7 @@ On *Azure Portal*, go to :
 - We have access to logs which show us that the deployment went well and that the server is running (cf *img/endpoint_api_aca.png*)
 
 *We obtain the same results as for the previous runs.*
-For example, we can test our endpoint metrics and see that it returns the information requested during the Prometheus configuration.
+For instance, we can test our `/metrics` endpoint and see that it returns the same information as before (cf *img/endpoint_api_aca2.png*).
 
 ---
 ### 10. Bonus
@@ -393,6 +394,8 @@ For example, we can test our endpoint metrics and see that it returns the inform
 ---
 #### 10.2. Set up a local prometheus stack to scrape and store your exposed metrics
 
+On a second CLI terminal, we have to type :
+
 ````bash
 WSL2 :
 toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet$
@@ -400,11 +403,35 @@ toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/proj
 $ cd prometheus
 toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet/prometheus$
 
-$ sudo chmod a+rx prometheus.exe
+$ sudo chmod a+rx prometheus.exe # on Windows
+Or
+$ sudo chmod a+rx prometheus # on Linux
 [sudo] password for toto:
 
 toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet/prometheus$
+$ ./prometheus.exe # on Windows
+Or
+$ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus # on Windows or Linux
+````
+
+- Go to ***http://localhost:9090*** (or ***http://localhost:9090/graph***)
+- Then, go to ***http://localhost:9090/targets***
+
+Here is a summary of the different steps :
+
+````bash
+# On the first CLI terminal :
+$ docker run -p 8080:80 -it --rm my-api-image:latest
+Or
+$ docker run -p 8080:80 -it --rm antoinearthur/app_big_data_docker_project
+
+# On the second CLI terminal :
 $ ./prometheus.exe
 Or
 $ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus
+
+# On the third CLI terminal :
+curl http://localhost:8080/metrics
 ````
+
+- With that last command on the third CLI, We have access to our `/metrics` endpoint, as before (cf *prometheus3.JPG*).
