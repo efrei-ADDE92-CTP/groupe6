@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 80
 
-# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 5000"] on Windows
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
+# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 80"] on Windows
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "main:api_router"]
