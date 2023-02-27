@@ -337,8 +337,9 @@ On *Azure Portal*, go to :
 - "*All resources*"
 - "*Subscription*" -> *"Efrei - Apprentis BDML*" -> "*groupe6-container*"
 - "*Overview*"
-- "*Properties*" -> Networking -> click on "*deactivated*"
+- "*Properties*" -> "*Networking*" -> click on "*deactivated*"
 - "*Input*" -> check "*activated*"
+- "*Unsecured connections*" -> "*Authorized*"
 - "*Destination port*" -> "*5000*"
 - "*Save*" and return to "*Overview*"
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
