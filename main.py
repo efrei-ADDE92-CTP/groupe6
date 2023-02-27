@@ -36,7 +36,7 @@ async def predict(input_data: schemas.Iris) :
 
     start_time = time.time()
     
-    # Convert input type schemas.Iris to JSON object and then into a Python object
+    # Convert input type schemas.Iris to JSON object and then into a Python object, with json.loads()
     data = json.loads(input_data.json())
 
     # Extract only values and convert them to numpy 
@@ -50,11 +50,11 @@ async def predict(input_data: schemas.Iris) :
 
     # Convert Python object into a string in JSON object format
     # json_pred = json.dumps(pred.tolist()) # -> str type
-    # iris_pred = iris_labels[int(float(json_pred[1:-1]))] # ValueError: invalid literal for int() with base 10: '2.0'
+    # iris_pred = iris_labels[int(float(json_pred[1:-1]))] # '[2.0]' ValueError: invalid literal for int() with base 10: '2.0'
 
     # Get the prediction label
     iris_pred = iris_labels[int(pred[0])] # TypeError: list indices must be integers or slices, not numpy.float64
-    labeled_pred = {'prediction': iris_pred}
+    labeled_pred = {'prediction': iris_pred, 'score': pred[0]}
 
     # Increment the counter
     predict_calls_counter.inc()
