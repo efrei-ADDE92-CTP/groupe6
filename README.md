@@ -87,10 +87,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 80
 
-# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 5000"] on Windows
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
+# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 80"] on Windows
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "main:api_router"]
 ````
 
 ---
@@ -99,7 +99,7 @@ CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ````bash
 $ docker build --tag my-api-image:latest . # Build the image
 
-$ docker run -p 8080:5000 -it --rm my-api-image:latest # run the image
+$ docker run -p 8080:80 -it --rm my-api-image:latest # run the image
 Or
 $ docker run -it --network host --rm my-api-image:latest # all ports mapped by the container are locally mapped
 
@@ -137,7 +137,7 @@ $ docker push antoinearthur/app_big_data_docker_project
 ### 6'.Run the image and test the program yet again
 
 ````bash
-$ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
+$ docker run -p 8080:80 -it --rm antoinearthur/app_big_data_docker_project
 
 # In another CLI terminal :
 $ curl 'http://localhost:8080/predict' -H 'content-type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
@@ -162,10 +162,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 80
 
-# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 5000"] on Windows
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
+# CMD ["bash", "-c", "uvicorn main:api_router --host 0.0.0.0 --port 80"] on Windows
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "main:api_router"]
 ````
 
 - ##### b. Configure the *GitHub Actions workflow* *(configure the autoscaling using the number of simultaneous requests as a parameter)*
@@ -268,9 +268,9 @@ $ pip freeze > requirements.txt
 
 ````bash
 # On the first CLI terminal :
-$ docker run -p 8080:5000 -it --rm my-api-image:latest
+$ docker run -p 8080:80 -it --rm my-api-image:latest
 Or
-$ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
+$ docker run -p 8080:80 -it --rm antoinearthur/app_big_data_docker_project
 ````
 
 ````python
@@ -350,7 +350,7 @@ On *Azure Portal*, go to :
 - "*Properties*" -> "*Networking*" -> click on "*deactivated*"
 - "*Input*" -> check "*activated*"
 - "*Unsecured connections*" -> "*Authorized*"
-- "*Destination port*" -> "*5000*"
+- "*Destination port*" -> "*80*"
 - "*Save*" and return to "*Overview*"
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
 - Go to "*Logs*" -> type "*ContainerAppConsoleLogs_CL*" into the console
