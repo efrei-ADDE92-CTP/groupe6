@@ -1,6 +1,6 @@
 # groupe6
 By conserving wildlife, we're ensuring that future generations can enjoy our natural world.
- 
+
 ![image](https://user-images.githubusercontent.com/57401552/210325880-fd86a618-3812-471a-82f3-6dd79716f01c.png)
 
 ### Deliveries :
@@ -96,11 +96,11 @@ CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "main:api_router"]
 ### 5. Docker commands to build, run the project and to test the program
 
 ````bash
-$ docker build --tag my-api-image:latest . # Build the image
+$ docker build --tag files . # Build the image
 
-$ docker run -p 8080:5000 -it --rm my-api-image:latest # run the image
+$ docker run -p 8080:5000 -it --rm files # run the image
 Or
-$ docker run -it --network host --rm my-api-image:latest # all ports mapped by the container are locally mapped
+$ docker run -it --network host --rm files # all ports mapped by the container are locally mapped
 
 # In another CLI terminal :
 $ curl --request POST --url 'http://localhost:8080/predict' --header 'content-type: application/json' --data '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
@@ -118,13 +118,13 @@ Login Succeeded
 
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
-my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
+files                                       latest    2161bac8e4e0   40 hours ago   1.04GB
 
 $ docker tag 2161bac8e4e0 antoinearthur/app_big_data_docker_project
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
 antoinearthur/app_big_data_docker_project   latest    2161bac8e4e0   40 hours ago   1.04GB
-my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
+files                                       latest    2161bac8e4e0   40 hours ago   1.04GB
 
 $ docker push antoinearthur/app_big_data_docker_project
 ````
@@ -208,6 +208,7 @@ jobs:
         run: |
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
           az acr build --registry ${{ secrets.REGISTRY_LOGIN_SERVER }} --image my-api-image:latest .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
 
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@47e03a783248cc0b5647f7ea03a8fb807fbc8e2f
@@ -263,7 +264,7 @@ $ pip freeze > requirements.txt
 * See the *test_charge.py* file on the repository.
 
 ````bash
-$ docker run -p 8080:5000 -it --rm my-api-image:latest
+$ docker run -p 8080:5000 -it --rm files
 Or
 $ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
 ````
@@ -343,9 +344,9 @@ On *Azure Portal*, go to :
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
 
 ````bash
-$ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
+$ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/files
 
-$ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
+$ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/files
 
 ````
 
