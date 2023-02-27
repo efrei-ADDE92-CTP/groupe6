@@ -73,7 +73,7 @@ According to the official documentation, here the advantages to use that framewo
 ---
 ### 4. Configuration of a *Dockerfile*
 
-````docker
+````dockerfile
 FROM python:3.7-slim-buster
 
 # RUN apt-get update && apt-get install -y python3-dev build-essential
@@ -264,13 +264,14 @@ $ pip freeze > requirements.txt
 * See the *test_charge.py* file on the repository.
 
 ````bash
+# On the first CLI terminal :
 $ docker run -p 8080:5000 -it --rm my-api-image:latest
 Or
 $ docker run -p 8080:5000 -it --rm antoinearthur/app_big_data_docker_project
 ````
 
 ````python
-# In another CLI terminal :
+# On another CLI terminal :
 $ python test_charge.py
 ````
 
@@ -336,7 +337,7 @@ Status code distribution:
 On *Azure Portal*, go to :
 - "*All resources*"
 - "*Subscription*" -> *"Efrei - Apprentis BDML*" -> "*groupe6-container*"
-- "*Overview*"
+- "*Overview*" or "*Input*"
 - "*Properties*" -> "*Networking*" -> click on "*deactivated*"
 - "*Input*" -> check "*activated*"
 - "*Unsecured connections*" -> "*Authorized*"
@@ -348,7 +349,6 @@ On *Azure Portal*, go to :
 $ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
 
 $ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
-
 ````
 
 - We obtain the same results as for the previous runs.
