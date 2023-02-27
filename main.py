@@ -98,4 +98,4 @@ def api_call_summary_post() :
 
 
 if __name__ == '__main__' :
-    uvicorn.run(api_router, host="0.0.0.0", port=5000) # api_router.run(host='0.0.0.0', port=8080, debug=False)
+    uvicorn.run(api_router, host="0.0.0.0", port=8080) # api_router.run(host='0.0.0.0', port=8080, debug=False)
