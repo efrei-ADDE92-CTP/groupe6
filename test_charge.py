@@ -1,6 +1,6 @@
 import subprocess
 
-url = 'http://localhost:5000/predict'
+url = 'http://localhost:8080/predict'
 
 cmd = f'hey -n 10000 -c 100 -m POST {url}'
 process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
