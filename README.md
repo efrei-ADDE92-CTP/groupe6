@@ -416,6 +416,8 @@ $ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus # 
 
 - Go to ***http://localhost:9090*** (or ***http://localhost:9090/graph***)
 - Then, go to ***http://localhost:9090/targets***
+- Finally, click on : ***http://localhost:8080/metrics***
+  We have access to our `/metrics` endpoint, as before (cf *prometheus3.JPG*).
 
 Here is a summary of the different steps :
 
@@ -434,4 +436,4 @@ $ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus
 curl http://localhost:8080/metrics
 ````
 
-- With that last command on the third CLI, We have access to our `/metrics` endpoint, as before (cf *prometheus3.JPG*).
+With that last command on the third CLI, We have access to our `/metrics` endpoint on the CLI, as before.
