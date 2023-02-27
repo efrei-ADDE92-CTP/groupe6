@@ -64,7 +64,7 @@ async def predict(input_data: schemas.Iris) :
     labeled_pred = {'prediction': iris_pred, 'score': pred[0]}
 
     # Increment the counter
-    predict_calls_counter.labels('POST').inc()
+    predict_calls_counter.labels('POST', '/predict').inc()
 
     # Get the request time duration
     predict_call_duration.labels(pred).observe(time.time() - start_time)
