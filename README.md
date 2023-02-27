@@ -354,10 +354,10 @@ On *Azure Portal*, go to :
 - "*Save*" and return to "*Overview*"
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
 - Go to "*Logs*" -> type "*ContainerAppConsoleLogs_CL*" into the console
-- We have access to logs which show us that the server is running (cf *img/endpoint_api_aca.png*)
+- We have access to logs which show us that the deployment went well and that the server is running (cf *img/endpoint_api_aca.png*)
 
-
-- We obtain the same results as for the previous runs.
+*We obtain the same results as for the previous runs.*
+For example, we can test our endpoint metrics and see that it returns the information requested during the Prometheus configuration.
 
 ---
 ### 10. Bonus
@@ -407,5 +407,4 @@ toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/proj
 $ ./prometheus.exe
 Or
 $ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus
-
 ````
