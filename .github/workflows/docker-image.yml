@@ -41,10 +41,12 @@ jobs:
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@47e03a783248cc0b5647f7ea03a8fb807fbc8e2f
         with:
+          acrName: efreiprediction
           containerAppName: group6-container
+          containerAppEnvironment: group6-env
+          targetPort: 5050
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
           imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
-          containerAppEnvironment: group6-env
 
       - name: Configure Autoscaling
         uses: azure/CLI@v1
