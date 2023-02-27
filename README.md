@@ -148,7 +148,7 @@ $ curl 'http://localhost:8080/predict' -H 'content-type: application/json' -d '{
 #### 7.1. Build the Docker image, publish the Docker image on Azure Container Registry (ACR) and deploy it on Azure Container App
 
 - ##### a. Configuration of a *Dockerfile* (see above)
-````docker
+````dockerfile
 FROM python:3.7-slim-buster
 
 # RUN apt-get update && apt-get install -y python3-dev build-essential
