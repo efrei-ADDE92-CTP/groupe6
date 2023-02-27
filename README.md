@@ -290,7 +290,7 @@ INFO:     172.17.0.1:35866 - "POST /predict HTTP/1.1" 422 Unprocessable Entity
 ````bash
 Summary:
   Total:        7.2684 secs
-  Slowest:      0.1666 secs
+  Slowest:      
   Fastest:      0.0014 secs
   Average:      0.0718 secs
   Requests/sec: 1375.8257
@@ -332,7 +332,13 @@ Status code distribution:
   [422] 10000 responses
 ````
 
-* Interpretation of the results : ***complete***
+* *Interpretation of the results* :
+  - Total process time: 7.2684 secs.
+  - Fastest response: 0.0014 secs.
+  - Slowest response: 0.1666 secs.
+  - Average response time of our requests: 0.0718 secs.
+  - 50% of our requests have a maximum response time of 0.0682 secs.
+  - Requests/sec: 1375.8257
 
 ---
 ### 9. Get the Endpoint API of your Azure Container App *(ACA)*
@@ -350,13 +356,6 @@ On *Azure Portal*, go to :
 - Go to "*Logs*" -> type "*ContainerAppConsoleLogs_CL*" into the console
 - We have access to logs which show us that the server is running (cf *img/endpoint_api_aca.png*)
 
-````bash
-$ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
-
-$ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
-
-$ curl 'https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/predict' -H 'content-type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
-````
 
 - We obtain the same results as for the previous runs.
 
