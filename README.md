@@ -41,6 +41,7 @@ $ pip install -r requirements.txt
 $ pip install scipy==1.7.3
 $ pip install contourpy==1.0.6
 $ pip install prometheus_client
+$ sudo apt-get install prometheus
 $ pip install starlette
 $ pip install starlette-exporter
 $ pip install wheel
@@ -213,10 +214,12 @@ jobs:
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@47e03a783248cc0b5647f7ea03a8fb807fbc8e2f
         with:
+          acrName: efreiprediction
+          containerAppEnvironment: group6-env
           containerAppName: group6-container
+          targetPort: 80
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
           imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/my-api-image:latest
-          containerAppEnvironment: group6-env
 
       - name: Configure Autoscaling
         uses: azure/CLI@v1
@@ -344,11 +347,15 @@ On *Azure Portal*, go to :
 - "*Destination port*" -> "*5000*"
 - "*Save*" and return to "*Overview*"
 - Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+- Go to "*Logs*" -> type "*ContainerAppConsoleLogs_CL*" into the console
+- We have access to logs which show us that the server is running (cf *img/endpoint_api_aca.png*)
 
 ````bash
 $ docker pull group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
 
 $ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/my-api-image:latest
+
+$ curl 'https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io/predict' -H 'content-type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}'
 ````
 
 - We obtain the same results as for the previous runs.
@@ -383,3 +390,23 @@ $ docker run -p 8080:5000 group6-container.internal.ashysea-af4b5413.westeurope.
     - *Post Deploy Container App*
     - *Post Run actions/checkout@v2*
     - *Complete job*
+
+---
+#### 10.2. Set up a local prometheus stack to scrape and store your exposed metrics
+
+````bash
+WSL2 :
+toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet$
+
+$ cd prometheus
+toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet/prometheus$
+
+$ sudo chmod a+rx prometheus.exe
+[sudo] password for toto:
+
+toto@DESKTOP-OBTCMJQ:/mnt/c/Users/arthu/Efrei/M2/APPLICATIONS_OF_BIG_DATA_2/projet/prometheus$
+$ ./prometheus.exe
+Or
+$ prometheus --config.file=prometheus.yml --storage.tsdb.path=/tmp/prometheus
+
+````
