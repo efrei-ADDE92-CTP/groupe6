@@ -120,13 +120,13 @@ Login Succeeded
 
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
-my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
+my-api-image:latest                         latest    6194dcc249b1   40 hours ago   1.04GB
 
-$ docker tag 2161bac8e4e0 antoinearthur/app_big_data_docker_project
+$ docker tag 6194dcc249b1 antoinearthur/app_big_data_docker_project
 $ docker images
 REPOSITORY                                  TAG       IMAGE ID       CREATED        SIZE
-antoinearthur/app_big_data_docker_project   latest    2161bac8e4e0   40 hours ago   1.04GB
-my-api-image:latest                         latest    2161bac8e4e0   40 hours ago   1.04GB
+antoinearthur/app_big_data_docker_project   latest    6194dcc249b1   40 hours ago   1.04GB
+my-api-image:latest                         latest    6194dcc249b1   40 hours ago   1.04GB
 
 $ docker push antoinearthur/app_big_data_docker_project
 ````
