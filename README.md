@@ -6,7 +6,7 @@ By conserving wildlife, we're ensuring that future generations can enjoy our nat
 ### Deliveries :
 - Github repository URL with all elements *(code, Dockerfile, workflow configuration Github)* : *https://github.com/efrei-ADDE92-CTP/groupe6*
 - Name of the docker image on Azure Container Registry (ACR) : ***`group6-container`***
-- Endpoint API on Azure Container App : *https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io*
+- Endpoint API on Azure Container App : *https://group6-container.ashycliff-15f451bd.westeurope.azurecontainerapps.io*
 
 ---
 ### 0. Preliminary preparation
@@ -353,12 +353,19 @@ On *Azure Portal*, go to :
 - "*Unsecured connections*" -> "*Authorized*"
 - "*Destination port*" -> "*80*"
 - "*Save*" and return to "*Overview*"
-- Copy the application url (endpoint api of the *ACA*) : https://group6-container.internal.ashysea-af4b5413.westeurope.azurecontainerapps.io
+- Copy the application url (endpoint api of the *ACA*) : https://group6-container.ashycliff-15f451bd.westeurope.azurecontainerapps.io
 - Go to "*Logs*" -> type "*ContainerAppConsoleLogs_CL*" into the console
 - We have access to logs which show us that the deployment went well and that the server is running (cf *img/endpoint_api_aca.png*)
 
 *We obtain the same results as for the previous runs.*
-For instance, we can test our `/metrics` endpoint and see that it returns the same information as before (cf *img/endpoint_api_aca2.png*).
+For instance, we can test our `/metrics` endpoint and see that it returns the same information as before, by going to the following URL :
+https://group6-container.ashycliff-15f451bd.westeurope.azurecontainerapps.io/metrics (cf *img/ACAendpointcall2.JPG*).
+
+Finally, by performing a "*curl*" command in a local terminal, we get the same result as before :
+````bash
+curl 'https://group6-container.ashycliff-15f451bd.westeurope.azurecontainerapps.io/predict' -H 'content-type: application/json' -d '{"sepal_l": 5, "sepal_w": 2, "petal_l": 3, "petal_w": 4}
+````
+ (cf *img/ACAendpointcall.png*)
 
 ---
 ### 10. Bonus
